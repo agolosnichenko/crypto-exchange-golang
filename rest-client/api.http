@@ -1,0 +1,22 @@
+@hostname = http://localhost:3000
+
+POST {{hostname}}/order
+Content-Type: application/json
+
+{
+    "bid": true,
+    "size": 20,
+    "price": 10000,
+    "type": "LIMIT",
+    "market": "ETH"
+}
+
+###
+
+GET {{hostname}}/book/ETH
+
+###
+
+DELETE {{hostname}}/order/3091121
+
+###
