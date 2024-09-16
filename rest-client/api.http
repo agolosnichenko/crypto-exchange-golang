@@ -1,22 +1,24 @@
 @hostname = http://localhost:3000
+@market = ETH
 
+###
+# @name Place an order
 POST {{hostname}}/order
 Content-Type: application/json
 
 {
-    "bid": true,
-    "size": 20,
-    "price": 10000,
-    "type": "LIMIT",
-    "market": "ETH"
+    "bid": false,
+    "size": 2,
+    "type": "MARKET",
+    "market": "{{market}}"
 }
 
 ###
-
-GET {{hostname}}/book/ETH
+# @name getOrderbook
+GET {{hostname}}/book/{{market}}
 
 ###
-
-DELETE {{hostname}}/order/3091121
+# @name cancelOrder
+DELETE {{hostname}}/order/{{getOrderbook.response.body.Bids[0].ID}}
 
 ###

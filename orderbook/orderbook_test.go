@@ -31,6 +31,9 @@ func TestPlaceLimitOrder(t *testing.T) {
 	ob.PlaceLimitOrder(10000, sellOrderA)
 	ob.PlaceLimitOrder(9000, sellOrderB)
 
+	require.Equal(t, 2, len(ob.orders))
+	require.Equal(t, ob.orders[sellOrderA.ID], sellOrderA)
+	require.Equal(t, ob.orders[sellOrderB.ID], sellOrderB)
 	require.Equal(t, 2, len(ob.asks))
 }
 
@@ -88,4 +91,7 @@ func TestCancelOrder(t *testing.T) {
 
 	ob.CancelOrder(buyOrder)
 	assert.Equal(t, 0.0, ob.BidTotalVolume())
+
+	_, ok := ob.orders[buyOrder.ID]
+	assert.Equal(t, false, ok)
 }
