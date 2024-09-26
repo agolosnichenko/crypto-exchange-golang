@@ -8,11 +8,15 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+const (
+	userId = int64(1)
+)
+
 func TestLimit(t *testing.T) {
 	l := NewLimit(10000)
-	buyOrderA := NewOrder(true, 5)
-	buyOrderB := NewOrder(true, 8)
-	buyOrderC := NewOrder(true, 10)
+	buyOrderA := NewOrder(true, 5, userId)
+	buyOrderB := NewOrder(true, 8, userId)
+	buyOrderC := NewOrder(true, 10, userId)
 
 	l.AddOrder(buyOrderA)
 	l.AddOrder(buyOrderB)
@@ -26,8 +30,8 @@ func TestLimit(t *testing.T) {
 func TestPlaceLimitOrder(t *testing.T) {
 	ob := NewOrderbook()
 
-	sellOrderA := NewOrder(false, 10)
-	sellOrderB := NewOrder(false, 5)
+	sellOrderA := NewOrder(false, 10, userId)
+	sellOrderB := NewOrder(false, 5, userId)
 	ob.PlaceLimitOrder(10000, sellOrderA)
 	ob.PlaceLimitOrder(9000, sellOrderB)
 
@@ -40,10 +44,10 @@ func TestPlaceLimitOrder(t *testing.T) {
 func TestPlaceMarketOrder(t *testing.T) {
 	ob := NewOrderbook()
 
-	sellOrder := NewOrder(false, 20)
+	sellOrder := NewOrder(false, 20, userId)
 	ob.PlaceLimitOrder(10000, sellOrder)
 
-	buyOrder := NewOrder(true, 10)
+	buyOrder := NewOrder(true, 10, userId)
 	matches := ob.PlaceMarketOrder(buyOrder)
 
 	assert.Equal(t, 1, len(matches))
@@ -59,10 +63,10 @@ func TestPlaceMarketOrder(t *testing.T) {
 func TestPlaceMarketOrderMultiFill(t *testing.T) {
 	ob := NewOrderbook()
 
-	buyOrderA := NewOrder(true, 5)
-	buyOrderB := NewOrder(true, 8)
-	buyOrderC := NewOrder(true, 10)
-	buyOrderD := NewOrder(true, 1)
+	buyOrderA := NewOrder(true, 5, userId)
+	buyOrderB := NewOrder(true, 8, userId)
+	buyOrderC := NewOrder(true, 10, userId)
+	buyOrderD := NewOrder(true, 1, userId)
 
 	ob.PlaceLimitOrder(5000, buyOrderC)
 	ob.PlaceLimitOrder(5000, buyOrderD)
@@ -71,7 +75,7 @@ func TestPlaceMarketOrderMultiFill(t *testing.T) {
 
 	assert.Equal(t, 24.0, ob.BidTotalVolume())
 
-	sellOrder := NewOrder(false, 20)
+	sellOrder := NewOrder(false, 20, userId)
 	matches := ob.PlaceMarketOrder(sellOrder)
 
 	assert.Equal(t, 4.0, ob.BidTotalVolume())
@@ -83,7 +87,7 @@ func TestPlaceMarketOrderMultiFill(t *testing.T) {
 
 func TestCancelOrder(t *testing.T) {
 	ob := NewOrderbook()
-	buyOrder := NewOrder(true, 4)
+	buyOrder := NewOrder(true, 4, userId)
 	ob.PlaceLimitOrder(10000.0, buyOrder)
 
 	assert.Equal(t, 1, len(ob.bids))
